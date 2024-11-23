@@ -1,56 +1,44 @@
-const video = document.querySelector('video');
-const playerButton = document.querySelector('.player__button');
-const rewindButton = document.querySelector('.rewind');
-const skipButton = document.querySelector('.skip');
-const progressBar = document.querySelector('.progress');
+const video = document.getElementById('video');
+const playPauseButton = document.getElementById('play-pause');
 const progressFilled = document.querySelector('.progress__filled');
-const volumeControl = document.querySelector('.volume');
-const speedControl = document.querySelector('.playbackSpeed');
-const speedBar = document.querySelector('.speed-bar');
+const volumeControl = document.getElementById('volume');
+const playbackSpeedControl = document.getElementById('playbackSpeed');
+const rewindButton = document.getElementById('rewind-10s');
+const forwardButton = document.getElementById('forward-25s');
 
-function togglePlay() {
+// Toggle Play/Pause
+playPauseButton.addEventListener('click', () => {
   if (video.paused) {
     video.play();
-    playerButton.textContent = '❚ ❚'; 
+    playPauseButton.textContent = '❚ ❚'; // Pause symbol
   } else {
     video.pause();
-    playerButton.textContent = '►'; 
+    playPauseButton.textContent = '►'; // Play symbol
   }
-}
+});
 
-function updateProgress() {
+// Update progress bar
+video.addEventListener('timeupdate', () => {
   const progress = (video.currentTime / video.duration) * 100;
   progressFilled.style.width = `${progress}%`;
-  progressBar.value = progress;
-}
+});
 
-function rewind() {
-  video.currentTime -= 10;
-}
+// Volume control
+volumeControl.addEventListener('input', () => {
+  video.volume = volumeControl.value;
+});
 
-function skip() {
-  video.currentTime += 25;
-}
+// Playback speed control
+playbackSpeedControl.addEventListener('input', () => {
+  video.playbackRate = playbackSpeedControl.value;
+});
 
-function updateVolume() {
-  video.volume = volumeControl.value / 100;
-}
+// Rewind 10 seconds
+rewindButton.addEventListener('click', () => {
+  video.currentTime = Math.max(0, video.currentTime - 10);
+});
 
-function updateSpeed() {
-  video.playbackRate = speedControl.value;
-  speedBar.textContent = `${speedControl.value}×`;
-}
-
-function setProgress(e) {
-  const newTime = (e.offsetX / progressBar.offsetWidth) * video.duration;
-  video.currentTime = newTime;
-}
-
-playerButton.addEventListener('click', togglePlay);
-rewindButton.addEventListener('click', rewind);
-skipButton.addEventListener('click', skip);
-volumeControl.addEventListener('input', updateVolume);
-speedControl.addEventListener('input', updateSpeed);
-progressBar.addEventListener('click', setProgress);
-
-video.addEventListener('timeupdate', updateProgress);
+// Forward 25 seconds
+forwardButton.addEventListener('click', () => {
+  video.currentTime = Math.min(video.duration, video.currentTime + 25);
+});
